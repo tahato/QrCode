@@ -1,12 +1,19 @@
-import { View, Text } from 'react-native'
-import React from 'react'
 
+import React from "react";
+import { Stack } from "expo-router";
+import GlobalProvider from "../context/GlobaleProvider"
+import '../global.css'
 const _layout = () => {
   return (
-    <View>
-      <Text>_layout</Text>
-    </View>
-  )
-}
+    <GlobalProvider>
+    <Stack>
+      <Stack.Screen name="index" options={{ headerShown: false }} />
+      <Stack.Screen name="(scan)" options={{ headerShown: false }} />
+      <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+      
+    </Stack>
+    </GlobalProvider>
+  );
+};
 
-export default _layout
+export default _layout;
