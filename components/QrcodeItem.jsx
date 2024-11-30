@@ -1,4 +1,4 @@
-import { View, Text, Linking, TouchableOpacity, Image,Clipboard } from "react-native";
+import { View, Text, Linking, TouchableOpacity, Image,Clipboard, ToastAndroid } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { icons } from "@/constants";
 import Dialog from "react-native-dialog";
@@ -39,7 +39,9 @@ const QrcodeItem = ({ item }) => {
         <TouchableOpacity
           className="px-4 "
           onPress={() => Linking.openURL(item.code)}
-          onLongPress={()=>Clipboard.setString(item.code)
+          onLongPress={()=>{Clipboard.setString(item.code) 
+            ToastAndroid.show('copied',ToastAndroid.SHORT )
+          }
            }
         >
           <Text className="text-white">{item.code}</Text>
@@ -49,7 +51,7 @@ const QrcodeItem = ({ item }) => {
       <View className="flex-1 flex-row justify-end items-center">
         <TouchableOpacity
           className=" mr-2  bg-gray-400 rounded-full p-2 "
-          onPress={() => setVisibleDelete(true)}
+          onPress={() => setVisibleDelete(true) }
         >
           <Image
             resizeMode="contain"
