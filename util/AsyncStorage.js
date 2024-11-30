@@ -10,7 +10,7 @@ export const setItem = async (key, value) => {
 export const getItem = async (key) => {
   try {
     const value = await AsyncStorage.getItem(key);
-    return value != null ? value : null;
+    return value != null ? JSON.parse(value) : null;
   } catch (error) {
     console.error("Error getting item:", error);
     return null;
@@ -25,7 +25,14 @@ export const login = async (username, password) => {
       const user = value?.find((user) => user.userName === username);
       if (!user || user.password != password) {
         return { error: "wrong username or password" };
-      } else return { message: "login succefuly" };
+      } else {
+        await AsyncStorage.setItem(
+          "logged",
+          JSON.stringify({ username, isLoged: true })
+        );
+
+        return { message: "login succefuly" };
+      }
     } else {
       return { error: "no user found" };
     }
@@ -51,18 +58,12 @@ export const getCodes = async (user) => {
     return Error(error);
   }
 };
-export const deleteCodes = async ( createdAt) => {
-  console.log(user, createdAt);
-
+export const deleteCodes = async (createdAt) => {
   try {
     let value = await AsyncStorage.getItem("codes");
     value = JSON.parse(value);
-
     if (Array.isArray(value) && value.length != 0) {
-      console.log(createdAt);
-
       const codes = value?.filter((code) => code.createdAt != createdAt);
-
       await AsyncStorage.setItem("codes", JSON.stringify(codes));
       return codes;
     } else {

@@ -4,17 +4,25 @@ import "../global.css";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { images } from "../constants";
 import { ScrollView } from "react-native";
-import { Link, Resirect, router } from "expo-router";
+import { router } from "expo-router";
 import CustomButton from "../components/CustomButton";
 import { StatusBar } from "expo-status-bar";
 import { useGlobalContext } from "@/context/GlobaleProvider";
+import { getItem } from "@/util/AsyncStorage";
 const index = () => {
-  const { user, isLogged } = useGlobalContext();
+  const { user, setUser } = useGlobalContext();
 
   useEffect(() => {
-    if (isLogged) router.replace("./codes");
+    alredyLoged();
   }, []);
 
+  const alredyLoged = async () => {
+    const logged = await getItem("logged");
+    if (logged.isLoged) {
+      setUser(logged.username);
+      router.replace("./codes");
+    }
+  };
   return (
     <SafeAreaView className="h-full bg-black ">
       <ScrollView contentContainerStyle={{ height: "100%" }}>
@@ -31,7 +39,7 @@ const index = () => {
           />
           <View className=" mt-5">
             <Text className="text-white text-3xl text-center font-bold">
-              Sann your <Text className="text-secondary-200">QR Code</Text>
+              San <Text className="text-secondary-200">QR Code</Text>
             </Text>
             <Image
               source={images.path}
@@ -39,13 +47,10 @@ const index = () => {
               resizeMode="contain"
             />
           </View>
-          <Text className="text-gray-100 text-sm mt-7 font-pregular text-center">
-            where creativity meets innovation: embark on a journy of limitless
-            exploration with Aora
-          </Text>
+
           <CustomButton
-            title="Continue with Email"
-            handlePress={() => router.push("./sign-in")}
+            title="Get started"
+            handlePress={() => router.push(user ? "./codes" : "./sign-in")}
             containerStyle="mt-7 w-full"
           />
         </View>

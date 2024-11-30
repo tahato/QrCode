@@ -10,15 +10,10 @@ import React, { useState } from "react";
 import FormField from "../../components/FormField";
 import { Link, router } from "expo-router";
 import { getItem, setItem } from "../../util/AsyncStorage";
-import {
-  ALERT_TYPE,
-  Dialog,
-  AlertNotificationRoot,
-  Toast,
-} from "react-native-alert-notification";
+
 import CustomButton from "@/components/CustomButton";
 import { useGlobalContext } from "@/context/GlobaleProvider";
-
+import { images } from "@/constants";
 
 const SignUp = () => {
   const { setUser, setIsLogged } = useGlobalContext();
@@ -29,35 +24,39 @@ const SignUp = () => {
 
   const subimt = async () => {
     const existingData = await getItem("users");
-    if (existingData) setData(existingData);
+    const data= existingData || []
     if (userName != null && password != null) {
-      data.push({
-        userName,
-        password,
-        codes: [],
-      });
-      setItem("users", data);
-      Toast.show({
-        type: ALERT_TYPE.SUCCESS,
-        title: "Success",
-        textBody: 'register successfuly',
-        autoClose: 1000,
-      });
-      setTimeout(() => {
-      router.push("/codes");
+      const user = data.find((user) => user.userName === userName);
+      if (!user) {
+        data.push({
+          userName,
+          password,
+          codes: [],
+        });
+        setItem("users", data);
+        setItem("logged", { userName, isLoged: true });
+      
+       
+          router.replace("/codes");
         
-      }, 1000);
-       // set username and login state to globale context
-       setUser(userName)
-       setIsLogged(true)
+        // set username and login state to globale context
+        setUser(userName);
+        setIsLogged(true);
+      } else Alert.alert("user name is already exist ");
     } else Alert.alert("please input username and password ");
   };
 
   return (
     <SafeAreaView className="bg-primary h-full pt-20">
-      <AlertNotificationRoot/>
       <ScrollView>
         <View className="justify-center h-full w-full p-5  ">
+          <View className="items-center ">
+            <Image
+              source={images.logo}
+              resizeMode="contain"
+              className="w-40 h-40"
+            />
+          </View>
           <Text className="text-white text-2xl mt-10 font-psemibold ">
             Sign up
           </Text>
