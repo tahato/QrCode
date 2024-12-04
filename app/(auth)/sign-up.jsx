@@ -16,15 +16,15 @@ import { useGlobalContext } from "@/context/GlobaleProvider";
 import { images } from "@/constants";
 
 const SignUp = () => {
-  const { setUser, setIsLogged } = useGlobalContext();
+  const { setUser } = useGlobalContext();
 
   const [userName, setUserName] = useState();
   const [password, setPassword] = useState();
-  const [data, setData] = useState([]);
+console.log(userName);
 
   const subimt = async () => {
     const existingData = await getItem("users");
-    const data= existingData || []
+    const data = existingData || [];
     if (userName != null && password != null) {
       const user = data.find((user) => user.userName === userName);
       if (!user) {
@@ -33,15 +33,12 @@ const SignUp = () => {
           password,
           codes: [],
         });
-        setItem("users", data);
-        setItem("logged", { userName, isLoged: true });
-      
-       
-          router.replace("/codes");
-        
-        // set username and login state to globale context
         setUser(userName);
-        setIsLogged(true);
+        setItem("users", data);
+        setItem("logged", { username:userName, isLoged: true });
+        router.replace("/codes");
+
+        // set username and login state to globale context
       } else Alert.alert("user name is already exist ");
     } else Alert.alert("please input username and password ");
   };

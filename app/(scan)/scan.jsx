@@ -1,6 +1,13 @@
-import { View, Text, StyleSheet, StatusBar, Alert } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  StatusBar,
+  Alert,
+  TextInput,
+} from "react-native";
 import { useState } from "react";
-import { CameraView} from "expo-camera";
+import { CameraView } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import Dialog from "react-native-dialog";
@@ -12,14 +19,16 @@ const Scan = () => {
   const [code, setCode] = useState();
   const [title, setTitle] = useState();
   const [visible, setVisible] = useState(false);
+  const [isScanning, setIsScanning] = useState(true);
 
-  
   const showDialog = () => {
     setVisible(true);
+    setIsScanning(false);
   };
 
   const handleCancel = () => {
     setVisible(false);
+    setIsScanning(true);
   };
 
   const AddCode = async () => {
@@ -27,9 +36,9 @@ const Scan = () => {
     try {
       if (title != null) {
         const data = existingData || []; // push data to the existing array or create a new one for the first time
-        const existingCode = data.find(
-          (codes) => codes.code === code || codes.title === title
-        );
+        const existingCode = data
+          .filter((code) => code.user === user)
+          .find((codes) => codes.code === code || codes.title === title);
         if (!existingCode) {
           data.push({
             user,
@@ -43,7 +52,17 @@ const Scan = () => {
         } else
           Alert.alert(
             "this code is already exist",
-            existingCode.title + "\n" + existingCode.code
+            existingCode.title + "\n" + existingCode.code,
+            [
+              {
+                text: "ok",
+                onPress: () => {
+                  setVisible(false);
+                  setIsScanning(true);
+                  setTitle(null);
+                },
+              },
+            ]
           );
       } else Alert.alert("set a title");
     } catch (error) {
@@ -53,23 +72,30 @@ const Scan = () => {
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
+      <StatusBar backgroundColor="#00000080" />
       <CameraView
         style={StyleSheet.absoluteFillObject}
         facing="back"
-        onBarcodeScanned={({ data }) => {
-          setCode(data);
-          showDialog();
-        }}
+        onBarcodeScanned={
+          isScanning
+            ? ({ data }) => {
+                setCode(data);
+                showDialog();
+              }
+            : undefined
+        }
       ></CameraView>
       {/* dialogue component to add a qrCode name */}
       <View>
         <Dialog.Container visible={visible}>
-          <Dialog.Title>Add Code</Dialog.Title>
-          <Dialog.Description>set a title for QrCode</Dialog.Description>
+          <Dialog.Title style={{ color: "black" }}>Add Code</Dialog.Title>
+          <Dialog.Description style={{ color: "black" }}>
+            set a title for QrCode
+          </Dialog.Description>
           <Text className="px-4 mb-4 font-bold">{code}</Text>
-          <Dialog.Input
+          <TextInput
             onChangeText={(e) => setTitle(e)}
-            className="border-2 rounded-lg border-black"
+            className="border-2 rounded-lg border-black text-black"
           />
           <Dialog.Button label="Cancel" onPress={handleCancel} />
           <Dialog.Button label="Add" onPress={AddCode} />

@@ -17,9 +17,13 @@ const index = () => {
   }, []);
 
   const alredyLoged = async () => {
+    console.log('user page index',user);
+    
     const logged = await getItem("logged");
     if (logged.isLoged) {
       setUser(logged.username);
+      console.log(logged.username);
+      
       router.replace("./codes");
     }
   };

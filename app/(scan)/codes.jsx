@@ -4,9 +4,7 @@ import {
   FlatList,
   Image,
   TouchableOpacity,
-  Linking,
-  ScrollView,
-  Dimensions,
+  BackHandler,
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -20,13 +18,17 @@ import Dialog from "react-native-dialog";
 import { getCodes, setItem } from "@/util/AsyncStorage";
 const Codes = () => {
   // const {height}=Dimensions.get("window")
-  const { user, setUser } = useGlobalContext();
-  const [myCodes, setMyCodes] = useState([]);
+  const { user, setUser, myCodes, setMyCodes } = useGlobalContext();
+
   const [permission, requestPermission] = useCameraPermissions();
   const [visible, setVisible] = useState(false);
   // display data
   useEffect(() => {
     displayCodes();
+    BackHandler.addEventListener("hardwareBackPress", BackHandler.exitApp);
+    return () => {
+      BackHandler.removeEventListener("hardwareBackPress", BackHandler.exitApp);
+    };
   }, [myCodes]);
 
   const displayCodes = async () => {
@@ -64,13 +66,13 @@ const Codes = () => {
 
   return (
     <>
-      <SafeAreaView className="bg-primary pb-6 h-full px-4 relative ">
+      <SafeAreaView className="bg-primary pb-2 h-full px-4 relative ">
         {/* logout dialog */}
 
         <View>
           <Dialog.Container visible={visible}>
-            <Dialog.Title>Logout !</Dialog.Title>
-            <Dialog.Description>
+            <Dialog.Title style={{ color: "black" }}>Logout !</Dialog.Title>
+            <Dialog.Description style={{ color: "black" }}>
               Do you realy want to logout ?
             </Dialog.Description>
             <Dialog.Button label="Cancel" onPress={handleCancel} />
@@ -84,7 +86,7 @@ const Codes = () => {
           keyboardShouldPersistTaps="handled"
           renderItem={({ item }) => <QrcodeItem item={item} />}
           ListHeaderComponent={() => (
-            <View className="flex-row mb-4 mt-4 px-4   ">
+            <View className="flex-row mb-4 mt-4 px-4 ">
               <View>
                 <Text className="text-sm font-pmedium text-gray-100">
                   Welcom Back
@@ -100,13 +102,19 @@ const Codes = () => {
           )}
         />
         {/* <SafeAreaView > */}
-        
+
         {/* </SafeAreaView> */}
-        <View className="flex-1 items-start justify-end mb-4 bg-transparent">
-            <TouchableOpacity onPress={handelScan} className=" absolute bottom-1 right-1/2  translate-x-1/2 z-50">
+        <View className="items-start h-10 justify-center ">
+          <TouchableOpacity
+            onPress={handelScan}
+            className=" absolute bottom-1 right-1/2  translate-x-1/2 z-50"
+          >
             <Image source={icons.plus} resizeMode="contain" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={showDialog} className="ml-4 bg-transparent">
+          <TouchableOpacity
+            onPress={showDialog}
+            className="ml-4  j"
+          >
             <Image
               source={icons.logout}
               resizeMode="contain"
