@@ -7,6 +7,7 @@ export const useGlobalContext = () => useContext(GlobalContext);
 const GlobalProvider = ({ children }) => {
   const [isLogged, setIsLogged] = useState(false);
   const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
   const [myCodes, setMyCodes] = useState([]);
 
 
@@ -18,7 +19,9 @@ const GlobalProvider = ({ children }) => {
         user,
         setUser,
         myCodes,
-        setMyCodes
+        setMyCodes,
+        token,
+        setToken
       }}
     >
       {children}

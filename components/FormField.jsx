@@ -22,7 +22,7 @@ const FormField = ({
           placeholder={placeholder}
           placeholderTextColor="#7b7b8b"
           keyboardType={keyboardType}
-          secureTextEntry={title==='Password' && !showPassword}
+          secureTextEntry={title==='Password'  && !showPassword}
         />
         {title==='Password' && (
           

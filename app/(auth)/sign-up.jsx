@@ -5,43 +5,70 @@ import {
   ScrollView,
   Alert,
   SafeAreaView,
+  BackHandler,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import FormField from "../../components/FormField";
-import { Link, router } from "expo-router";
+import { Link, router, useFocusEffect } from "expo-router";
 import { getItem, setItem } from "../../util/AsyncStorage";
 
 import CustomButton from "@/components/CustomButton";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import { images } from "@/constants";
+import axios from "axios";
 
 const SignUp = () => {
-  const { setUser } = useGlobalContext();
+  const { setUser ,setToken} = useGlobalContext();
 
-  const [userName, setUserName] = useState();
-  const [password, setPassword] = useState();
-console.log(userName);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [password_confirmation, setPassword_confirmation] = useState("");
 
   const subimt = async () => {
-    const existingData = await getItem("users");
-    const data = existingData || [];
-    if (userName != null && password != null) {
-      const user = data.find((user) => user.userName === userName);
-      if (!user) {
-        data.push({
-          userName,
+    if (username != "" && password != "" && password_confirmation != "") {
+      await axios
+        .post("http://192.168.1.11:8000/api/register", {
+          username,
           password,
-          codes: [],
+          password_confirmation,
+        })
+        .then((res) => {
+          setUser(res.data.user);
+          setToken(res.data.token)
+          setItem("logged", { user: res.data.user, isLoged: true,token:res.data.token });
+          router.replace("/codes");
+          console.log("this is response from database", res.data);
+        })
+        .catch((err) => {
+          Alert.alert(
+            err.response.data.error.username?.[0] ||
+              err.response.data.error.password?.[0] ||
+              err.response.data.error.password[1]
+          );
         });
-        setUser(userName);
-        setItem("users", data);
-        setItem("logged", { username:userName, isLoged: true });
-        router.replace("/codes");
-
-        // set username and login state to globale context
-      } else Alert.alert("user name is already exist ");
-    } else Alert.alert("please input username and password ");
+    } else Alert.alert("fill all fields ");
   };
+  // const subimt = async () => {
+  //   const existingData = await getItem("users");
+  //   const data = existingData || [];
+  //   if (username != null && password != null && password_confirmation != null) {
+  //     const user = data.find((user) => user.username === username);
+  //     if (password != password_confirmation) Alert.alert("wrong confirmation ");
+  //     else if (!user) {
+  //       data.push({
+  //         username,
+  //         password,
+  //         codes: [],
+  //       });
+  //       setUser(username);
+  //       setItem("users", data);
+  //       setItem("logged", { username: username, isLoged: true });
+  //       router.replace("/codes");
+
+  //       // set username and login state to globale context
+  //     } else Alert.alert("user name is already exist ");
+  //   } else Alert.alert("fill all fields ");
+  // };
 
   return (
     <SafeAreaView className="bg-primary h-full pt-20">
@@ -59,8 +86,8 @@ console.log(userName);
           </Text>
           <FormField
             title="User Name"
-            value={userName}
-            handleChange={(e) => setUserName(e)}
+            value={username}
+            handleChange={(e) => setUsername(e)}
             otherStyle="mt-10"
             placeholder="User Name "
           />
@@ -69,6 +96,12 @@ console.log(userName);
             title="Password"
             value={password}
             handleChange={(e) => setPassword(e)}
+            otherStyle="mt-7"
+          />
+          <FormField
+            title="Password"
+            value={password_confirmation}
+            handleChange={(e) => setPassword_confirmation(e)}
             otherStyle="mt-7"
           />
           <CustomButton

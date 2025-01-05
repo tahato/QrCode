@@ -6,20 +6,31 @@ import {
   Alert,
   TextInput,
 } from "react-native";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CameraView } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import Dialog from "react-native-dialog";
 import { getItem, setItem } from "@/util/AsyncStorage";
 import { router } from "expo-router";
+import axios from "axios";
 
 const Scan = () => {
   const { user } = useGlobalContext();
   const [code, setCode] = useState();
-  const [title, setTitle] = useState();
+  const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
+  const [token, setToken] = useState();
+
+  //get token from local storage
+  useEffect(() => {
+    getToken();
+  }, []);
+  const getToken = async () => {
+    const token = await getItem("token");
+    setToken(token);
+  };
 
   const showDialog = () => {
     setVisible(true);
@@ -32,43 +43,85 @@ const Scan = () => {
   };
 
   const AddCode = async () => {
-    const existingData = await getItem("codes"); // get the old array from local storage
-    try {
-      if (title != null) {
-        const data = existingData || []; // push data to the existing array or create a new one for the first time
-        const existingCode = data
-          .filter((code) => code.user === user)
-          .find((codes) => codes.code === code || codes.title === title);
-        if (!existingCode) {
-          data.push({
-            user,
-            title,
-            code,
-            createdAt: new Date(),
+    if(title!=""){
+      
+      try {
+        await axios
+          .post(
+            "http://192.168.1.11:8000/api/qrcode/create",
+            {
+              title,
+              code,
+              user_id: user.id,
+            },
+            {
+              headers: { Authorization: "Bearer " + token },
+            }
+          )
+          .then((res) => {
+            setVisible(false);
+            router.replace("/codes");
+          })
+          .catch((e) =>{ Alert.alert(e.response.data.error,
+             e.response.data.qrCode.title
+             +'\n'+
+             e.response.data.qrCode.code,
+             [
+                        {
+                          text: "ok",
+                          onPress: () => {
+                            setVisible(false);
+                            setIsScanning(true);
+                            setTitle(null);
+                          },
+                        },
+                      ]
+              )
+  
+            
           });
-          await setItem("codes", data);
-          setVisible(false);
-          router.replace("/codes");
-        } else
-          Alert.alert(
-            "this code is already exist",
-            existingCode.title + "\n" + existingCode.code,
-            [
-              {
-                text: "ok",
-                onPress: () => {
-                  setVisible(false);
-                  setIsScanning(true);
-                  setTitle(null);
-                },
-              },
-            ]
-          );
-      } else Alert.alert("set a title");
-    } catch (error) {
-      console.log(error);
-    }
-  };
+      } 
+      catch (e) {  console.log(e);}
+    }else (Alert.alert('Please, set a tile'))
+  }
+
+    //const existingData = await getItem("codes"); // get the old array from local storage
+    //try {
+    //if (title != null) {
+    //const data = existingData || []; // push data to the existing array or create a new one for the first time
+    //     const existingCode = data
+    //       .filter((code) => code.user === user)
+    //       .find((codes) => codes.code === code || codes.title === title);
+    //     if (!existingCode) {
+    //       data.push({
+    //         user,
+    //         title,
+    //         code,
+    //         createdAt: new Date(),
+    //       });
+    //       await setItem("codes", data);
+    //       setVisible(false);
+    //       router.replace("/codes");
+    //     } else
+    //       Alert.alert(
+    //         "this code is already exist",
+    //         existingCode.title + "\n" + existingCode.code,
+    //         [
+    //           {
+    //             text: "ok",
+    //             onPress: () => {
+    //               setVisible(false);
+    //               setIsScanning(true);
+    //               setTitle(null);
+    //             },
+    //           },
+    //         ]
+    //       );
+    //   } else Alert.alert("set a title");
+    // } catch (error) {
+    //   console.log(error);
+    // }
+  // };
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
@@ -95,7 +148,7 @@ const Scan = () => {
           <Text className="px-4 mb-4 font-bold">{code}</Text>
           <TextInput
             onChangeText={(e) => setTitle(e)}
-            className="border-2 rounded-lg border-black text-black"
+            className="border-2 rounded-lg border-black text-black p-2 text-xl"
           />
           <Dialog.Button label="Cancel" onPress={handleCancel} />
           <Dialog.Button label="Add" onPress={AddCode} />

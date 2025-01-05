@@ -13,12 +13,20 @@ import { icons } from "@/constants";
 import Dialog from "react-native-dialog";
 import { useState } from "react";
 import { deleteCodes } from "@/util/AsyncStorage";
+import axios from "axios";
 
-const QrcodeItem = ({ item }) => {
+const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
   const [visibleDelete, setVisibleDelete] = useState(false);
 
-  const handleDelete = async (createdAt) => {
-    const codes = await deleteCodes(createdAt);
+  const handleDelete = async (id) => {
+    await axios
+      .delete(`http://192.168.1.11:8000/api/qrcode/delete/${id}`, {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((res) => {console.log(res.data)
+        setRefetch(!refetch)
+      })
+      .catch((e) => console.log(e.response.data));
     setVisibleDelete(false);
   };
   return (
@@ -33,10 +41,7 @@ const QrcodeItem = ({ item }) => {
             label="Cancel"
             onPress={() => setVisibleDelete(false)}
           />
-          <Dialog.Button
-            label="Delete"
-            onPress={() => handleDelete(item.createdAt)}
-          />
+          <Dialog.Button label="Delete" onPress={() => handleDelete(item.id)} />
         </Dialog.Container>
       </View>
 
@@ -53,7 +58,7 @@ const QrcodeItem = ({ item }) => {
           }}
         >
           <Text className="text-white">{item.code}</Text>
-          <Text className="text-gray-100 text-xs ">{item.createdAt}</Text>
+          <Text className="text-gray-100 text-xs ">{item.created_at}</Text>
         </TouchableOpacity>
       </View>
       <View className="flex-1 flex-row justify-end items-center ">

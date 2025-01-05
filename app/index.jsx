@@ -10,20 +10,17 @@ import { StatusBar } from "expo-status-bar";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import { getItem } from "@/util/AsyncStorage";
 const index = () => {
-  const { user, setUser } = useGlobalContext();
+  const { user, setUser, setToken } = useGlobalContext();
 
   useEffect(() => {
     alredyLoged();
   }, []);
 
   const alredyLoged = async () => {
-    console.log('user page index',user);
-    
     const logged = await getItem("logged");
     if (logged.isLoged) {
-      setUser(logged.username);
-      console.log(logged.username);
-      
+      setToken(logged.token)
+      setUser(logged.user);
       router.replace("./codes");
     }
   };
