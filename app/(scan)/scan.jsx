@@ -14,6 +14,7 @@ import Dialog from "react-native-dialog";
 import { getItem, setItem } from "@/util/AsyncStorage";
 import { router } from "expo-router";
 import axios from "axios";
+import Overlay from "@/components/Overlay";
 
 const Scan = () => {
   const { user } = useGlobalContext();
@@ -85,7 +86,7 @@ const Scan = () => {
     }else (Alert.alert('Please, set a tile'))
   }
 
-    //const existingData = await getItem("codes"); // get the old array from local storage
+
     //try {
     //if (title != null) {
     //const data = existingData || []; // push data to the existing array or create a new one for the first time
@@ -154,16 +155,8 @@ const Scan = () => {
           <Dialog.Button label="Add" onPress={AddCode} />
         </Dialog.Container>
       </View>
-      {/* overlay */}
-      <View className="bg-black w-full h-[30%] opacity-50" />
-      <View className="flex-row flex-1 items-center justify-center">
-        <View className="bg-black h-full flex-1  opacity-50" />
-        <View className="w-[70%] rounded-lg border-2 h-full border-white" />
-
-        <View className="bg-black h-full flex-1 opacity-50" />
-      </View>
-
-      <View className="bg-black w-full h-[30%] opacity-50" />
+    
+     <Overlay/>
     </SafeAreaView>
   );
 };

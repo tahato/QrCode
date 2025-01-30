@@ -21,7 +21,6 @@ import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 
 const Codes = () => {
-  // const {height}=Dimensions.get("window")
   const { user, setUser, token } = useGlobalContext();
   const [myCodes, setMyCodes] = useState();
   const [permission, requestPermission] = useCameraPermissions();
@@ -31,8 +30,6 @@ const Codes = () => {
 
   useFocusEffect(
     useCallback(() => {
-      console.log("first token show", token);
-
       displayCodes();
 
       BackHandler.addEventListener("hardwareBackPress", onBackPress);
@@ -168,10 +165,6 @@ const Codes = () => {
             )}
           />
         )}
-
-        {/* <SafeAreaView > */}
-
-        {/* </SafeAreaView> */}
         <View className="items-start h-10 justify-center ">
           <TouchableOpacity
             onPress={handelScan}

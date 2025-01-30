@@ -37,7 +37,6 @@ const SignUp = () => {
           setToken(res.data.token)
           setItem("logged", { user: res.data.user, isLoged: true,token:res.data.token });
           router.replace("/codes");
-          console.log("this is response from database", res.data);
         })
         .catch((err) => {
           Alert.alert(
@@ -48,27 +47,6 @@ const SignUp = () => {
         });
     } else Alert.alert("fill all fields ");
   };
-  // const subimt = async () => {
-  //   const existingData = await getItem("users");
-  //   const data = existingData || [];
-  //   if (username != null && password != null && password_confirmation != null) {
-  //     const user = data.find((user) => user.username === username);
-  //     if (password != password_confirmation) Alert.alert("wrong confirmation ");
-  //     else if (!user) {
-  //       data.push({
-  //         username,
-  //         password,
-  //         codes: [],
-  //       });
-  //       setUser(username);
-  //       setItem("users", data);
-  //       setItem("logged", { username: username, isLoged: true });
-  //       router.replace("/codes");
-
-  //       // set username and login state to globale context
-  //     } else Alert.alert("user name is already exist ");
-  //   } else Alert.alert("fill all fields ");
-  // };
 
   return (
     <SafeAreaView className="bg-primary h-full pt-20">
@@ -94,12 +72,14 @@ const SignUp = () => {
 
           <FormField
             title="Password"
+            type="Password"
             value={password}
             handleChange={(e) => setPassword(e)}
             otherStyle="mt-7"
           />
           <FormField
-            title="Password"
+            title="Confirm Password"
+            type="Password"
             value={password_confirmation}
             handleChange={(e) => setPassword_confirmation(e)}
             otherStyle="mt-7"

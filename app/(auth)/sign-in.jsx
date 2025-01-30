@@ -31,7 +31,6 @@ const SignIn = () => {
             setToken(res.data.token)
             setItem("logged", { user: res.data.user, isLoged: true ,token:res.data.token});
             router.replace("/codes");
-            console.log("this is response from database", res.data.token);
           })
           .catch((err) => {
             console.log('error',err.response.data.error);

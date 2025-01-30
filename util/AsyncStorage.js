@@ -76,32 +76,3 @@ export const deleteCodes = async (createdAt) => {
   }
 };
 
-// export const removeItem = async (key) => {
-//   try {
-//     await AsyncStorage.removeItem(key);
-//   } catch (error) {
-//     console.error("Error removing item:", error);
-//   }
-// };
-
-// export const clear = async () => {
-//   try {
-//     await AsyncStorage.clear();
-//   } catch (error) {
-//     console.error("Error clearing AsyncStorage:", error);
-//   }
-// };
-
-// export const getAllItems = async () => {
-//   try {
-//     const keys = await AsyncStorage.getAllKeys();
-//     const items = await AsyncStorage.multiGet(keys);
-//     return items.reduce((accumulator, [key, value]) => {
-//       accumulator[key] = JSON.parse(value);
-//       return accumulator;
-//     }, {});
-//   } catch (error) {
-//     console.error("Error getting all items:", error);
-//     return {};
-//   }
-// };

@@ -7,12 +7,10 @@ import {
   Clipboard,
   ToastAndroid,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
 
 import { icons } from "@/constants";
 import Dialog from "react-native-dialog";
 import { useState } from "react";
-import { deleteCodes } from "@/util/AsyncStorage";
 import axios from "axios";
 
 const QrcodeItem = ({ item, token,refetch,setRefetch }) => {

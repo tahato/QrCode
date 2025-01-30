@@ -4,6 +4,7 @@ import { TouchableOpacity } from "react-native";
 import {icons} from '../constants'
 const FormField = ({
   title,
+  type,
   value,
   handleChange,
   otherStyle,
@@ -22,9 +23,9 @@ const FormField = ({
           placeholder={placeholder}
           placeholderTextColor="#7b7b8b"
           keyboardType={keyboardType}
-          secureTextEntry={title==='Password'  && !showPassword}
+          secureTextEntry={type==='Password'  && !showPassword}
         />
-        {title==='Password' && (
+        {type==='Password' && (
           
           <TouchableOpacity 
           onPress={()=>setShowPassword(!showPassword)} >
