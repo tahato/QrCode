@@ -50,7 +50,7 @@ const Codes = () => {
     try {
       await axios
         .get(
-          `http://192.168.1.11:8000/api/qrcode/${user.id}`,
+          `${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/${user.id}`,
 
           {
             headers: { Authorization: "Bearer " + token },
@@ -93,7 +93,7 @@ const Codes = () => {
 
     await axios
       .post(
-        "http://192.168.1.11:8000/api/logout",
+        `${process.env.EXPO_PUBLIC_API_URL}/api/logout`,
         {},
         {
           headers: { Authorization: "Bearer " + token },
@@ -103,7 +103,6 @@ const Codes = () => {
         setUser(null);
         setItem("logged", { username: null, isLoged: false });
         router.replace("sign-in");
-        console.log("this is response from database", res.data);
       })
       .catch((err) => {
         Alert.alert(err.response.data.error);

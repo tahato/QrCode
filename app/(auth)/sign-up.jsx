@@ -27,7 +27,7 @@ const SignUp = () => {
   const subimt = async () => {
     if (username != "" && password != "" && password_confirmation != "") {
       await axios
-        .post("http://192.168.1.11:8000/api/register", {
+        .post(`${process.env.EXPO_PUBLIC_API_URL}/api/register`, {
           username,
           password,
           password_confirmation,

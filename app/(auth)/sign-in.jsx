@@ -22,7 +22,7 @@ const SignIn = () => {
         {
 
           await axios
-          .post("http://192.168.1.11:8000/api/login", {
+          .post(`${process.env.EXPO_PUBLIC_API_URL}/api/login`, {
             username,
             password
           })
@@ -44,18 +44,7 @@ const SignIn = () => {
       Alert.alert('errrrrrrrrrrrrrrrr',error);
     }
   };
-  // const subimt = async () => {
-  //   try {
-  //     const response = await login(username, password);
-  //     if (response.message != undefined) {
-  //       // set username and login state to globale context
-  //       setUser(username);
-  //       router.replace("/codes");
-  //     } else Alert.alert("Wrong username or password");
-  //   } catch (error) {
-  //     Alert.alert(error);
-  //   }
-  // };
+ 
 
   return (
     <SafeAreaView className="bg-primary h-full pt-20 ">
@@ -80,6 +69,7 @@ const SignIn = () => {
           />
           <FormField
             title="Password"
+            type="Password"
             value={password}
             handleChange={(e) => setPassword(e)}
             otherStyle="mt-7"

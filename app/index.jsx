@@ -13,6 +13,8 @@ const index = () => {
   const { user, setUser, setToken } = useGlobalContext();
 
   useEffect(() => {
+    console.log(process.env.EXPO_PUBLIC_API_URL);
+    
     alredyLoged();
   }, []);
 

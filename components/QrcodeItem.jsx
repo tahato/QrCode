@@ -18,7 +18,7 @@ const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
 
   const handleDelete = async (id) => {
     await axios
-      .delete(`http://192.168.1.11:8000/api/qrcode/delete/${id}`, {
+      .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/delete/${id}`, {
         headers: { Authorization: "Bearer " + token },
       })
       .then((res) => {console.log(res.data)
