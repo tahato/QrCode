@@ -8,6 +8,7 @@ const _layout = () => {
       <Stack>
         <Stack.Screen name="codes" options={{ headerShown: false }} />
         <Stack.Screen name="scan" options={{ headerShown: false }} />
+        <Stack.Screen name="receive" options={{ headerShown: false }} />
       </Stack>
       <StatusBar backgroundColor="#161622" style="light" />
     </>

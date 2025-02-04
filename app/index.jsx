@@ -42,7 +42,7 @@ const index = () => {
           />
           <View className=" mt-5">
             <Text className="text-white text-3xl text-center font-bold">
-              San <Text className="text-secondary-200">QR Code</Text>
+              Scan <Text className="text-secondary-200">QR Code</Text>
             </Text>
             <Image
               source={images.path}

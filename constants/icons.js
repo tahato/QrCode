@@ -12,6 +12,8 @@ import eyeHide from "../assets/icons/eye-hide.png";
 import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import Delete from "../assets/icons/delete.png";
+import share from "../assets/icons/share.png";
+import receive from "../assets/icons/receive.jpg";
 export default {
   play,
   bookmark,
@@ -27,4 +29,6 @@ export default {
   eyeHide,
   eye,
   Delete,
+  share,
+  receive
 };

@@ -19,6 +19,7 @@ import Dialog from "react-native-dialog";
 import { getCodes, getItem, setItem } from "@/util/AsyncStorage";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
+import Share from "@/components/Share";
 
 const Codes = () => {
   const { user, setUser, token } = useGlobalContext();
@@ -27,6 +28,31 @@ const Codes = () => {
   const [visible, setVisible] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [visibleShare,setVisibleShare]=useState(false)
+  const [itemToShare,setItemToShare]=useState()
+
+
+ // handle dialog
+ const showDialog = () => {
+  setVisible(true);
+};
+
+const handleCancel = () => {
+  setVisible(false);
+};
+
+const confirmeLogout = () => {
+  logout();
+  setVisible(false);
+};
+// scan
+const handelScan = () => {
+  if (!permission?.granted) requestPermission();
+  else {
+    router.push("./scan");
+  }
+};
+
 
   useFocusEffect(
     useCallback(() => {
@@ -67,26 +93,7 @@ const Codes = () => {
     }
   };
 
-  // handle dialog
-  const showDialog = () => {
-    setVisible(true);
-  };
-
-  const handleCancel = () => {
-    setVisible(false);
-  };
-
-  const confirmeLogout = () => {
-    logout();
-    setVisible(false);
-  };
-  // scan
-  const handelScan = () => {
-    if (!permission?.granted) requestPermission();
-    else {
-      router.push("./scan");
-    }
-  };
+ 
 
   const logout = async () => {
     // router.replace("sign-in");
@@ -109,10 +116,16 @@ const Codes = () => {
       });
   };
 
-  // delet qr code function
+
 
   return (
     <>
+    <View>
+      <Share 
+      setVisibleShare={setVisibleShare}
+      item={itemToShare}
+      visible={visibleShare}/>
+    </View>
       <SafeAreaView className="bg-primary pb-4 h-full px-4 relative ">
         {/* logout dialog */}
 
@@ -126,6 +139,7 @@ const Codes = () => {
             <Dialog.Button label="yes" onPress={confirmeLogout} />
           </Dialog.Container>
         </View>
+
         {loading ? (
           <ActivityIndicator size="large" color="#ffffff" style={{ flex: 1 }} />
         ) : (
@@ -139,6 +153,8 @@ const Codes = () => {
                 token={token}
                 refetch={refetch}
                 setRefetch={setRefetch}
+                setVisibleShare={setVisibleShare}
+                setItemToShare={setItemToShare}
               />
             )}
             ListHeaderComponent={() => (
@@ -153,29 +169,35 @@ const Codes = () => {
                 </View>
               </View>
             )}
-            ListEmptyComponent={() => (
-              !loading &&(
-
+            ListEmptyComponent={() =>
+              !loading && (
                 <EmptyState
                   title=" No code Found"
                   subtitle="press plus to scan"
                 />
               )
-            )}
+            }
           />
         )}
-        <View className="items-start h-10 justify-center ">
+        <View className="items-center h-10 justify-between flex-row ">
           <TouchableOpacity
             onPress={handelScan}
             className=" absolute bottom-1 right-1/2  translate-x-1/2 z-50"
           >
             <Image source={icons.plus} resizeMode="contain" />
           </TouchableOpacity>
-          <TouchableOpacity onPress={showDialog} className="ml-4  j">
+          <TouchableOpacity onPress={showDialog} className="ml-4 ">
             <Image
               source={icons.logout}
               resizeMode="contain"
               className="w-8 h-8"
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={()=>{ router.push("./receive")}} className="mr-4 ">
+            <Image
+              source={icons.receive}
+              resizeMode="contain"
+              className="w-14 h-14 mb-10"
             />
           </TouchableOpacity>
         </View>

@@ -13,7 +13,8 @@ import Dialog from "react-native-dialog";
 import { useState } from "react";
 import axios from "axios";
 
-const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
+
+const QrcodeItem = ({ item, token,refetch,setRefetch,setVisibleShare,setItemToShare }) => {
   const [visibleDelete, setVisibleDelete] = useState(false);
 
   const handleDelete = async (id) => {
@@ -27,6 +28,13 @@ const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
       .catch((e) => console.log(e.response.data));
     setVisibleDelete(false);
   };
+
+const share=()=>{
+  // handle sahre to database "axios"
+  setVisibleShare(true)
+  setItemToShare(item)
+}
+
   return (
     <View className="my-2 flex-row w-full ">
       <View>
@@ -42,8 +50,7 @@ const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
           <Dialog.Button label="Delete" onPress={() => handleDelete(item.id)} />
         </Dialog.Container>
       </View>
-
-      <View className="mr-8">
+      <View className="w-[75%]">
         <Text className="text-white font-semibold text-2xl  " numberOfLines={1}>
           {item.title}
         </Text>
@@ -61,8 +68,18 @@ const QrcodeItem = ({ item, token,refetch,setRefetch }) => {
       </View>
       <View className="flex-1 flex-row justify-end items-center ">
         <TouchableOpacity
-          className=" mr-2  bg-gray-400 rounded-full p-2  "
-          onPress={() => setVisibleDelete(true)}
+          className=" mr-2  bg-gray-200 rounded-full p-2  "
+          onPress={share}
+        >
+          <Image
+            resizeMode="contain"
+            source={icons.share}
+            className="w-6 h-6 "
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          className=" mr-2  bg-gray-200 rounded-full p-2  "
+          onPress={()=>setVisibleDelete(true)}
         >
           <Image
             resizeMode="contain"
