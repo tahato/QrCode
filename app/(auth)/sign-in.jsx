@@ -33,7 +33,6 @@ const SignIn = () => {
             router.replace("/codes");
           })
           .catch((err) => {
-            console.log('error',err.response.data.error);
             
             Alert.alert(
               err.response.data.error

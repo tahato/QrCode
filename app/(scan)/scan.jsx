@@ -17,7 +17,7 @@ import axios from "axios";
 import Overlay from "@/components/Overlay";
 
 const Scan = () => {
-  const { user,token } = useGlobalContext();
+  const { user, token } = useGlobalContext();
   const [code, setCode] = useState();
   const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
@@ -34,8 +34,7 @@ const Scan = () => {
   };
 
   const AddCode = async () => {
-    if(title!=""){
-      
+    if (title != "") {
       try {
         await axios
           .post(
@@ -53,31 +52,29 @@ const Scan = () => {
             setVisible(false);
             router.replace("/codes");
           })
-          .catch((e) =>{ console.log( e.response.data);
-          
-            Alert.alert(e.response.data.error,
-             e.response.data.qrCode.title
-             +'\n'+
-             e.response.data.qrCode.code,
-             [
-                        {
-                          text: "ok",
-                          onPress: () => {
-                            setVisible(false);
-                            setIsScanning(true);
-                            setTitle(null);
-                          },
-                        },
-                      ]
-              )
-  
-            
-          });
-      } 
-      catch (e) {  console.log(e);}
-    }else (Alert.alert('Please, set a tile'))
-  }
+          .catch((e) => {
+            console.log(e.response.data);
 
+            Alert.alert(
+              e.response.data.error,
+              e.response.data.qrCode.title + "\n" + e.response.data.qrCode.code,
+              [
+                {
+                  text: "ok",
+                  onPress: () => {
+                    setVisible(false);
+                    setIsScanning(true);
+                    setTitle(null);
+                  },
+                },
+              ]
+            );
+          });
+      } catch (e) {
+        console.log(e);
+      }
+    } else Alert.alert("Please, set a tile");
+  };
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>
@@ -110,8 +107,8 @@ const Scan = () => {
           <Dialog.Button label="Add" onPress={AddCode} />
         </Dialog.Container>
       </View>
-    
-     <Overlay/>
+
+      <Overlay />
     </SafeAreaView>
   );
 };

@@ -14,18 +14,12 @@ import Dialog from "react-native-dialog";
 import { useState } from "react";
 import axios from "axios";
 import { useGlobalContext } from "@/context/GlobaleProvider";
+import { router } from "expo-router";
 
-const QrcodeItem = ({
-  qrCode,
-  refetch,
-  setRefetch,
-  setVisibleShare,
-}) => {
-  const { user, token,setItemToShare } = useGlobalContext();
+const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
+  const { user, token } = useGlobalContext();
 
   const [visibleDelete, setVisibleDelete] = useState(false);
-
-
 
   const handleDelete = async (id) => {
     await axios
@@ -40,20 +34,25 @@ const QrcodeItem = ({
     setVisibleDelete(false);
   };
 
-  
-  
   const share = async (id) => {
     try {
       await axios
-        .post(`${process.env.EXPO_PUBLIC_API_URL}/api/transfer/create`, {
-          sender_id: user.id,
-          qr_code_id: id,
-        })
+        .post(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/transfer/create`,
+          {
+            sender_id: user.id,
+            qr_code_id: id,
+          },
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        )
         .then((res) => {
-          setItemToShare(res.data.data.id);
-          setVisibleShare(true);
+          router.push(`/share/${res.data.data.id}`);
         })
-        .catch((e) => Alert.alert(e.response.data.error));
+        .catch((e) => {
+          Alert.alert(e.response.data.error);
+        });
     } catch (e) {
       console.log(e);
     }

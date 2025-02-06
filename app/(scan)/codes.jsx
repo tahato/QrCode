@@ -19,7 +19,6 @@ import Dialog from "react-native-dialog";
 import { getCodes, getItem, setItem } from "@/util/AsyncStorage";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
-import Share from "@/components/Share";
 import { fetchCodes } from "../../util/axios";
 const Codes = () => {
   const { user, setUser, token } = useGlobalContext();
@@ -101,15 +100,8 @@ const Codes = () => {
       });
   };
 
-  
   return (
     <>
-      <View>
-        <Share
-          setVisibleShare={setVisibleShare}
-          visible={visibleShare}
-        />
-      </View>
       <SafeAreaView className="bg-primary pb-4 h-full px-4 relative ">
         {/* logout dialog */}
 

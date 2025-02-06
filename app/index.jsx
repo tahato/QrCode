@@ -13,15 +13,13 @@ const index = () => {
   const { user, setUser, setToken } = useGlobalContext();
 
   useEffect(() => {
-    console.log(process.env.EXPO_PUBLIC_API_URL);
-    
     alredyLoged();
   }, []);
 
   const alredyLoged = async () => {
     const logged = await getItem("logged");
     if (logged.isLoged) {
-      setToken(logged.token)
+      setToken(logged.token);
       setUser(logged.user);
       router.replace("./codes");
     }
