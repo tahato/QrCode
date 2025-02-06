@@ -11,27 +11,17 @@ import { CameraView } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import Dialog from "react-native-dialog";
-import { getItem, setItem } from "@/util/AsyncStorage";
+import { getItem } from "@/util/AsyncStorage";
 import { router } from "expo-router";
 import axios from "axios";
 import Overlay from "@/components/Overlay";
 
 const Scan = () => {
-  const { user } = useGlobalContext();
+  const { user,token } = useGlobalContext();
   const [code, setCode] = useState();
   const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
-  const [token, setToken] = useState();
-
-  //get token from local storage
-  useEffect(() => {
-    getToken();
-  }, []);
-  const getToken = async () => {
-    const token = await getItem("token");
-    setToken(token);
-  };
 
   const showDialog = () => {
     setVisible(true);
@@ -49,7 +39,7 @@ const Scan = () => {
       try {
         await axios
           .post(
-            "http://192.168.1.11:8000/api/qrcode/create",
+            `${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/create`,
             {
               title,
               code,
@@ -63,7 +53,9 @@ const Scan = () => {
             setVisible(false);
             router.replace("/codes");
           })
-          .catch((e) =>{ Alert.alert(e.response.data.error,
+          .catch((e) =>{ console.log( e.response.data);
+          
+            Alert.alert(e.response.data.error,
              e.response.data.qrCode.title
              +'\n'+
              e.response.data.qrCode.code,
@@ -86,43 +78,6 @@ const Scan = () => {
     }else (Alert.alert('Please, set a tile'))
   }
 
-
-    //try {
-    //if (title != null) {
-    //const data = existingData || []; // push data to the existing array or create a new one for the first time
-    //     const existingCode = data
-    //       .filter((code) => code.user === user)
-    //       .find((codes) => codes.code === code || codes.title === title);
-    //     if (!existingCode) {
-    //       data.push({
-    //         user,
-    //         title,
-    //         code,
-    //         createdAt: new Date(),
-    //       });
-    //       await setItem("codes", data);
-    //       setVisible(false);
-    //       router.replace("/codes");
-    //     } else
-    //       Alert.alert(
-    //         "this code is already exist",
-    //         existingCode.title + "\n" + existingCode.code,
-    //         [
-    //           {
-    //             text: "ok",
-    //             onPress: () => {
-    //               setVisible(false);
-    //               setIsScanning(true);
-    //               setTitle(null);
-    //             },
-    //           },
-    //         ]
-    //       );
-    //   } else Alert.alert("set a title");
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  // };
 
   return (
     <SafeAreaView style={StyleSheet.absoluteFillObject}>

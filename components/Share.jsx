@@ -1,23 +1,39 @@
 import { View, Text, Button, Pressable } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import QRCode from "react-native-qrcode-svg";
-import Svg, { Circle, Rect } from "react-native-svg";
-import Connect from "../assets/images/connect.svg";
-import { router } from "expo-router";
+import { useGlobalContext } from "@/context/GlobaleProvider";
 
-const Share = ({ visible, item, setVisibleShare }) => {
-  const cancel = () => {
-    // handle cancel in database "axios"
-    setVisibleShare(false);
+const Share = ({ visible, setVisibleShare }) => {
+  const {  token,itemToShare } = useGlobalContext();
+
+
+
+useEffect(() => {
+ console.log(itemToShare);
+ 
+}, [])
+
+
+const cancel = async (id) => {
+    await axios
+      .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/transfer/delete/${id}`, {
+        headers: { Authorization: "Bearer " + token },
+      })
+      .then((res) => {
+        console.log(res.data);
+        setRefetch(!refetch);
+      })
+      .catch((e) => console.log(e.response.data));
+      setVisibleShare(false);
+
   };
-
   return (
     <>
       {visible ? (
         <View className="z-50 bg-white w-full h-full justify-center items-center flex p-8">
 
           <View className="flex-1 items-center justify-center pt-12">
-            <QRCode value={item.code} size={180} />
+            <QRCode value={itemToShare} size={180} />
           </View>
           <Text className="mb-12 font-semibold text-lg ">
             Scan to transefer this code{" "}

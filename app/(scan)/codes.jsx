@@ -20,7 +20,7 @@ import { getCodes, getItem, setItem } from "@/util/AsyncStorage";
 import { useFocusEffect } from "@react-navigation/native";
 import axios from "axios";
 import Share from "@/components/Share";
-
+import { fetchCodes } from "../../util/axios";
 const Codes = () => {
   const { user, setUser, token } = useGlobalContext();
   const [myCodes, setMyCodes] = useState();
@@ -28,31 +28,28 @@ const Codes = () => {
   const [visible, setVisible] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [visibleShare,setVisibleShare]=useState(false)
-  const [itemToShare,setItemToShare]=useState()
+  const [visibleShare, setVisibleShare] = useState(false);
 
+  // handle dialog
+  const showDialog = () => {
+    setVisible(true);
+  };
 
- // handle dialog
- const showDialog = () => {
-  setVisible(true);
-};
+  const handleCancel = () => {
+    setVisible(false);
+  };
 
-const handleCancel = () => {
-  setVisible(false);
-};
-
-const confirmeLogout = () => {
-  logout();
-  setVisible(false);
-};
-// scan
-const handelScan = () => {
-  if (!permission?.granted) requestPermission();
-  else {
-    router.push("./scan");
-  }
-};
-
+  const confirmeLogout = () => {
+    logout();
+    setVisible(false);
+  };
+  // scan
+  const handelScan = () => {
+    if (!permission?.granted) requestPermission();
+    else {
+      router.push("./scan");
+    }
+  };
 
   useFocusEffect(
     useCallback(() => {
@@ -74,26 +71,14 @@ const handelScan = () => {
   const displayCodes = async () => {
     setLoading(true);
     try {
-      await axios
-        .get(
-          `${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/${user.id}`,
-
-          {
-            headers: { Authorization: "Bearer " + token },
-          }
-        )
-        .then((res) => {
-          setMyCodes(res.data.codes);
-        })
-        .catch((e) => console.log(e.response.data));
+      const codes = await fetchCodes(user.id, token);
+      setMyCodes(codes);
     } catch {
       (e) => console.log(e);
     } finally {
       setLoading(false);
     }
   };
-
- 
 
   const logout = async () => {
     // router.replace("sign-in");
@@ -116,16 +101,15 @@ const handelScan = () => {
       });
   };
 
-
-
+  
   return (
     <>
-    <View>
-      <Share 
-      setVisibleShare={setVisibleShare}
-      item={itemToShare}
-      visible={visibleShare}/>
-    </View>
+      <View>
+        <Share
+          setVisibleShare={setVisibleShare}
+          visible={visibleShare}
+        />
+      </View>
       <SafeAreaView className="bg-primary pb-4 h-full px-4 relative ">
         {/* logout dialog */}
 
@@ -149,12 +133,11 @@ const handelScan = () => {
             keyboardShouldPersistTaps="handled"
             renderItem={({ item }) => (
               <QrcodeItem
-                item={item}
+                qrCode={item}
                 token={token}
                 refetch={refetch}
                 setRefetch={setRefetch}
                 setVisibleShare={setVisibleShare}
-                setItemToShare={setItemToShare}
               />
             )}
             ListHeaderComponent={() => (
@@ -193,7 +176,12 @@ const handelScan = () => {
               className="w-8 h-8"
             />
           </TouchableOpacity>
-          <TouchableOpacity onPress={()=>{ router.push("./receive")}} className="mr-4 ">
+          <TouchableOpacity
+            onPress={() => {
+              router.push("./receive");
+            }}
+            className="mr-4 "
+          >
             <Image
               source={icons.receive}
               resizeMode="contain"

@@ -33,49 +33,7 @@ import {
       setToken(token);
     };
   
-    // const AddCode = async () => {
-    //   if(title!=""){
-        
-    //     try {
-    //       await axios
-    //         .post(
-    //           "http://192.168.1.11:8000/api/qrcode/create",
-    //           {
-    //             title,
-    //             code,
-    //             user_id: user.id,
-    //           },
-    //           {
-    //             headers: { Authorization: "Bearer " + token },
-    //           }
-    //         )
-    //         .then((res) => {
-    //           setVisible(false);
-    //           router.replace("/codes");
-    //         })
-    //         .catch((e) =>{ Alert.alert(e.response.data.error,
-    //            e.response.data.qrCode.title
-    //            +'\n'+
-    //            e.response.data.qrCode.code,
-    //            [
-    //                       {
-    //                         text: "ok",
-    //                         onPress: () => {
-    //                           setVisible(false);
-    //                           setIsScanning(true);
-    //                           setTitle(null);
-    //                         },
-    //                       },
-    //                     ]
-    //             )
-    
-              
-    //         });
-    //     } 
-    //     catch (e) {  console.log(e);}
-    //   }else (Alert.alert('Please, set a tile'))
-    // }
-  
+
   
   
     return (
@@ -88,7 +46,6 @@ import {
             isScanning
               ? ({ data }) => {
                   setCode(data);
-                  // showDialog();
                 }
               : undefined
           }

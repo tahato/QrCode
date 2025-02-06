@@ -6,34 +6,58 @@ import {
   Image,
   Clipboard,
   ToastAndroid,
+  Alert,
 } from "react-native";
 
 import { icons } from "@/constants";
 import Dialog from "react-native-dialog";
 import { useState } from "react";
 import axios from "axios";
+import { useGlobalContext } from "@/context/GlobaleProvider";
 
+const QrcodeItem = ({
+  qrCode,
+  refetch,
+  setRefetch,
+  setVisibleShare,
+}) => {
+  const { user, token,setItemToShare } = useGlobalContext();
 
-const QrcodeItem = ({ item, token,refetch,setRefetch,setVisibleShare,setItemToShare }) => {
   const [visibleDelete, setVisibleDelete] = useState(false);
+
+
 
   const handleDelete = async (id) => {
     await axios
       .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/delete/${id}`, {
         headers: { Authorization: "Bearer " + token },
       })
-      .then((res) => {console.log(res.data)
-        setRefetch(!refetch)
+      .then((res) => {
+        console.log(res.data);
+        setRefetch(!refetch);
       })
       .catch((e) => console.log(e.response.data));
     setVisibleDelete(false);
   };
 
-const share=()=>{
-  // handle sahre to database "axios"
-  setVisibleShare(true)
-  setItemToShare(item)
-}
+  
+  
+  const share = async (id) => {
+    try {
+      await axios
+        .post(`${process.env.EXPO_PUBLIC_API_URL}/api/transfer/create`, {
+          sender_id: user.id,
+          qr_code_id: id,
+        })
+        .then((res) => {
+          setItemToShare(res.data.data.id);
+          setVisibleShare(true);
+        })
+        .catch((e) => Alert.alert(e.response.data.error));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   return (
     <View className="my-2 flex-row w-full ">
@@ -47,29 +71,32 @@ const share=()=>{
             label="Cancel"
             onPress={() => setVisibleDelete(false)}
           />
-          <Dialog.Button label="Delete" onPress={() => handleDelete(item.id)} />
+          <Dialog.Button
+            label="Delete"
+            onPress={() => handleDelete(qrCode.id)}
+          />
         </Dialog.Container>
       </View>
       <View className="w-[75%]">
         <Text className="text-white font-semibold text-2xl  " numberOfLines={1}>
-          {item.title}
+          {qrCode.title}
         </Text>
         <TouchableOpacity
           className="px-4 "
-          onPress={() => Linking.openURL(item.code)}
+          onPress={() => Linking.openURL(qrCode.code)}
           onLongPress={() => {
-            Clipboard.setString(item.code);
+            Clipboard.setString(qrCode.code);
             ToastAndroid.show("copied", ToastAndroid.SHORT);
           }}
         >
-          <Text className="text-white">{item.code}</Text>
-          <Text className="text-gray-100 text-xs ">{item.created_at}</Text>
+          <Text className="text-white">{qrCode.code}</Text>
+          <Text className="text-gray-100 text-xs ">{qrCode.created_at}</Text>
         </TouchableOpacity>
       </View>
       <View className="flex-1 flex-row justify-end items-center ">
         <TouchableOpacity
           className=" mr-2  bg-gray-200 rounded-full p-2  "
-          onPress={share}
+          onPress={() => share(qrCode.id)}
         >
           <Image
             resizeMode="contain"
@@ -79,7 +106,7 @@ const share=()=>{
         </TouchableOpacity>
         <TouchableOpacity
           className=" mr-2  bg-gray-200 rounded-full p-2  "
-          onPress={()=>setVisibleDelete(true)}
+          onPress={() => setVisibleDelete(true)}
         >
           <Image
             resizeMode="contain"

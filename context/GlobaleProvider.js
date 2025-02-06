@@ -9,6 +9,7 @@ const GlobalProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
   const [myCodes, setMyCodes] = useState([]);
+  const [itemToShare, setItemToShare] = useState();
 
 
   return (
@@ -21,7 +22,9 @@ const GlobalProvider = ({ children }) => {
         myCodes,
         setMyCodes,
         token,
-        setToken
+        setToken,
+        itemToShare,
+        setItemToShare
       }}
     >
       {children}
