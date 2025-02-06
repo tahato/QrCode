@@ -17,20 +17,27 @@ import axios from "axios";
 import Overlay from "@/components/Overlay";
 
 const Receive = () => {
-  const { user } = useGlobalContext();
-  const [code, setCode] = useState();
-  const [title, setTitle] = useState("");
+  const { user, token } = useGlobalContext();
   const [visible, setVisible] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
-  const [token, setToken] = useState();
 
-  //get token from local storage
-  useEffect(() => {
-    getToken();
-  }, []);
-  const getToken = async () => {
-    const token = await getItem("token");
-    setToken(token);
+  const update = (id) => {
+    try {
+      axios.patch(
+        `${process.env.EXPO_PUBLIC_API_URL}/api/transfer`,
+        {
+          id,
+          receiver_id:user.id
+        },
+        {
+          headers: { Authorization: "Bearre" + token },
+        }
+      ).then((res)=>{
+        router.replace('/codes')
+      } );
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   return (
@@ -41,8 +48,8 @@ const Receive = () => {
         facing="back"
         onBarcodeScanned={
           isScanning
-            ? ({ data }) => {
-                setCode(data);
+            ? ({ id }) => {
+                update(id);
               }
             : undefined
         }

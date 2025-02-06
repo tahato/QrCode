@@ -11,7 +11,7 @@ const share = () => {
 
   const cancel = async () => {
     await axios
-      .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/transfer/delete/${id}`, {
+      .delete(`${process.env.EXPO_PUBLIC_API_URL}/api/transfer/${id}`, {
         headers: { Authorization: "Bearer " + token },
       })
       .then((res) => {
