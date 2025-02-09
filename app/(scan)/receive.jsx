@@ -18,8 +18,7 @@ import Overlay from "@/components/Overlay";
 
 const Receive = () => {
   const { user, token } = useGlobalContext();
-  const [visible, setVisible] = useState(false);
-  const [isScanning, setIsScanning] = useState(true);
+  const [isScanning] = useState(true);
 
   const update = (id) => {
     try {
@@ -30,7 +29,7 @@ const Receive = () => {
           receiver_id:user.id
         },
         {
-          headers: { Authorization: "Bearre" + token },
+          headers: { Authorization: "Bearer " + token },
         }
       ).then((res)=>{
         router.replace('/codes')

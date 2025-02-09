@@ -1,4 +1,4 @@
-import { View, Text, Button, Pressable } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import React, { useEffect } from "react";
 import QRCode from "react-native-qrcode-svg";
 import { useGlobalContext } from "@/context/GlobaleProvider";
@@ -8,6 +8,45 @@ import axios from "axios";
 const share = () => {
   const { token } = useGlobalContext();
   const { id } = useLocalSearchParams();
+
+  useEffect(() => {
+    setTimeout(() => {
+      cancel()
+    }, 30000);
+    const intervalId = setInterval(() => {
+      check(intervalId);
+    }, 1000);
+
+    return () => {
+      clearInterval(intervalId);
+    };
+  }, []);
+
+  const check = async (intervalId) => {
+    try {
+      await axios
+        .post(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/transfer/check`,
+          {
+            id
+          },
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        )
+        .then((res) => {
+          console.log( 'result and response',res.data.data);
+
+          if (res.data.data == "sent") {
+            clearInterval(intervalId);
+            router.replace("/codes");
+          }
+        })
+        .catch((e) => console.log( 'errrrrrrrrrrrrrrr',e));
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const cancel = async () => {
     await axios
