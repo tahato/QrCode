@@ -1,4 +1,4 @@
-import { View, Text, Pressable, BackHandler } from "react-native";
+import { View, Text, Pressable, BackHandler, Alert } from "react-native";
 import React, { useCallback, useEffect } from "react";
 import QRCode from "react-native-qrcode-svg";
 import { useGlobalContext } from "@/context/GlobaleProvider";
@@ -12,7 +12,7 @@ const share = () => {
 
   useFocusEffect(
     useCallback(() => {
-      setTimeout(() => {
+      const timeOut=setTimeout(() => {
         cancel();
       }, 30000);
       const intervalId = setInterval(() => {
@@ -22,6 +22,7 @@ const share = () => {
       BackHandler.addEventListener("hardwareBackPress", cancel);
       return () => {
         clearInterval(intervalId)
+        clearTimeout(timeOut)
         BackHandler.removeEventListener("hardwareBackPress", cancel);
       };
     }, []) // Run the callback when the `user` value changes
@@ -42,11 +43,12 @@ const share = () => {
         )
         .then((res) => {
           if (res.data.data == "sent") {
+            Alert.alert('Qr Code sent !')
             clearInterval(intervalId);
             router.replace("/codes");
           }
         })
-        .catch((e) => console.log("errrrrrrrrrrrrrrr", e));
+        .catch((e) => console.log("", e));
     } catch (e) {
       console.log(e);
     }
@@ -58,10 +60,10 @@ const share = () => {
         headers: { Authorization: "Bearer " + token },
       })
       .then((res) => {
-        console.log(res.data.mesaage);
+        console.log(res.data.message);
         router.replace("/codes");
       })
-      .catch((e) => console.log("error", e.response.data));
+      .catch((e) => console.log( e.response.data));
   };
   return (
     <>
