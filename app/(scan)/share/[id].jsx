@@ -43,7 +43,7 @@ const share = () => {
         )
         .then((res) => {
           if (res.data.data == "sent") {
-            Alert.alert('Qr Code sent !')
+            Alert.alert('Qr Code transferd !')
             clearInterval(intervalId);
             router.replace("/codes");
           }
