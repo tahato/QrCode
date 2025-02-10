@@ -1,5 +1,5 @@
-import { View, Text, Pressable, BackHandler, Alert } from "react-native";
-import React, { useCallback, useEffect } from "react";
+import { View, Text, Pressable, BackHandler, Alert, AppState } from "react-native";
+import React, { useCallback, useEffect, useRef } from "react";
 import QRCode from "react-native-qrcode-svg";
 import { useGlobalContext } from "@/context/GlobaleProvider";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -8,7 +8,7 @@ import axios from "axios";
 const share = () => {
   const { token } = useGlobalContext();
   const { id } = useLocalSearchParams();
-
+  const appState=useRef(AppState.currentState)
 
   useFocusEffect(
     useCallback(() => {
@@ -20,10 +20,17 @@ const share = () => {
       }, 1000);
 
       BackHandler.addEventListener("hardwareBackPress", cancel);
+      const subscription = AppState.addEventListener("change", (nextAppState) => {
+        if (appState.current.match(/active/) && (nextAppState === "inactive" || nextAppState === "background")) {
+          cancel(); 
+        }
+        appState.current = nextAppState;
+      });
       return () => {
         clearInterval(intervalId)
         clearTimeout(timeOut)
         BackHandler.removeEventListener("hardwareBackPress", cancel);
+        subscription.remove();
       };
     }, []) // Run the callback when the `user` value changes
   );

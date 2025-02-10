@@ -51,6 +51,8 @@ const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
           router.push(`/share/${res.data.data.id}`);
         })
         .catch((e) => {
+          console.log(e.response.data.error);
+          
           Alert.alert(e.response.data.error);
         });
     } catch (e) {

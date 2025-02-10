@@ -10,8 +10,6 @@ import { useEffect, useState } from "react";
 import { CameraView } from "expo-camera";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useGlobalContext } from "@/context/GlobaleProvider";
-import Dialog from "react-native-dialog";
-import { getItem } from "@/util/AsyncStorage";
 import { router } from "expo-router";
 import axios from "axios";
 import Overlay from "@/components/Overlay";

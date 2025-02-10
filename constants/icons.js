@@ -13,7 +13,7 @@ import eye from "../assets/icons/eye.png";
 import play from "../assets/icons/play.png";
 import Delete from "../assets/icons/delete.png";
 import share from "../assets/icons/share.png";
-import receive from "../assets/icons/receive.jpg";
+import receive from "../assets/icons/receive.png";
 export default {
   play,
   bookmark,

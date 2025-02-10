@@ -154,7 +154,7 @@ const Codes = () => {
             }
           />
         )}
-        <View className="items-center h-10 justify-between flex-row ">
+        <View className="items-center h-10 justify-between flex-row mt-4">
           <TouchableOpacity
             onPress={handelScan}
             className=" absolute bottom-1 right-1/2  translate-x-1/2 z-50"
@@ -172,13 +172,14 @@ const Codes = () => {
             onPress={() => {
               router.push("./receive");
             }}
-            className="mr-4 "
+            className="mr-4 bg-gray-100 h-14 rounded-full mb-10"
           >
             <Image
               source={icons.receive}
               resizeMode="contain"
-              className="w-14 h-14 mb-10"
+              className="w-14 h-14 "
             />
+            <Text className="text-white">receive</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
