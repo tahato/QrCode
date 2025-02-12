@@ -16,22 +16,39 @@ import Overlay from "@/components/Overlay";
 
 const Receive = () => {
   const { user, token } = useGlobalContext();
-  const [isScanning] = useState(true);
+  const [isScanning, setIsScanning] = useState(true);
 
   const update = (id) => {
+    console.log(id);
+
     try {
-      axios.patch(
-        `${process.env.EXPO_PUBLIC_API_URL}/api/transfer`,
-        {
-          id,
-          receiver_id:user.id
-        },
-        {
-          headers: { Authorization: "Bearer " + token },
-        }
-      ).then((res)=>{
-        router.replace('/codes')
-      } );
+      setIsScanning(false);
+      axios
+        .patch(
+          `${process.env.EXPO_PUBLIC_API_URL}/api/transfer`,
+          {
+            id,
+            receiver_id: user.id,
+          },
+          {
+            headers: { Authorization: "Bearer " + token },
+          }
+        )
+        .then((res) => {
+          console.log(res.data.data);
+          router.replace("/codes");
+        })
+        .catch((e) => {
+          Alert.alert(e.response.error, [
+            {
+              text: "ok",
+              onPress: () => {
+                setIsScanning(true);
+              },
+            },
+          ]);
+          console.log(e.response);
+        });
     } catch (e) {
       console.log(e);
     }
@@ -45,8 +62,8 @@ const Receive = () => {
         facing="back"
         onBarcodeScanned={
           isScanning
-            ? ({ id }) => {
-                update(id);
+            ? ({ data }) => {
+                update(data);
               }
             : undefined
         }

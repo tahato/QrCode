@@ -13,6 +13,7 @@ const share = () => {
   useFocusEffect(
     useCallback(() => {
       const timeOut=setTimeout(() => {
+        Alert.alert('request time out ')
         cancel();
       }, 30000);
       const intervalId = setInterval(() => {

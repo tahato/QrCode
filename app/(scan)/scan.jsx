@@ -22,6 +22,7 @@ const Scan = () => {
   const [title, setTitle] = useState("");
   const [visible, setVisible] = useState(false);
   const [isScanning, setIsScanning] = useState(true);
+  const [disabled, setDisabled] = useState(false);
 
   const showDialog = () => {
     setVisible(true);
@@ -34,8 +35,10 @@ const Scan = () => {
   };
 
   const AddCode = async () => {
+    
     if (title != "") {
       try {
+        setDisabled(true)
         await axios
           .post(
             `${process.env.EXPO_PUBLIC_API_URL}/api/qrcode/create`,
@@ -53,6 +56,7 @@ const Scan = () => {
             router.replace("/codes");
           })
           .catch((e) => {
+
             console.log(e.response.data);
 
             Alert.alert(
@@ -65,6 +69,7 @@ const Scan = () => {
                     setVisible(false);
                     setIsScanning(true);
                     setTitle(null);
+                    setDisabled(false)
                   },
                 },
               ]
@@ -104,7 +109,7 @@ const Scan = () => {
             className="border-2 rounded-lg border-black text-black p-2 text-xl"
           />
           <Dialog.Button label="Cancel" onPress={handleCancel} />
-          <Dialog.Button label="Add" onPress={AddCode} />
+          <Dialog.Button label="add" onPress={AddCode} disabled={disabled} />
         </Dialog.Container>
       </View>
 

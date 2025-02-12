@@ -20,6 +20,7 @@ const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
   const { user, token } = useGlobalContext();
 
   const [visibleDelete, setVisibleDelete] = useState(false);
+  const [disabled, setDisabled] = useState(false);
 
   const handleDelete = async (id) => {
     await axios
@@ -36,6 +37,7 @@ const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
 
   const share = async (id) => {
     try {
+      setDisabled(true)
       await axios
         .post(
           `${process.env.EXPO_PUBLIC_API_URL}/api/transfer/create`,
@@ -51,8 +53,8 @@ const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
           router.push(`/share/${res.data.data.id}`);
         })
         .catch((e) => {
-          console.log(e.response.data.error);
-          
+          console.log(e.response.data);
+          setDisabled(false)
           Alert.alert(e.response.data.error);
         });
     } catch (e) {
@@ -98,6 +100,7 @@ const QrcodeItem = ({ qrCode, refetch, setRefetch, setVisibleShare }) => {
         <TouchableOpacity
           className=" mr-2  bg-gray-200 rounded-full p-2  "
           onPress={() => share(qrCode.id)}
+          disabled={disabled}
         >
           <Image
             resizeMode="contain"

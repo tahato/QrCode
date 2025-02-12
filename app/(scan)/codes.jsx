@@ -27,7 +27,6 @@ const Codes = () => {
   const [visible, setVisible] = useState(false);
   const [refetch, setRefetch] = useState(false);
   const [loading, setLoading] = useState(true);
-  const [visibleShare, setVisibleShare] = useState(false);
 
   // handle dialog
   const showDialog = () => {
@@ -47,6 +46,13 @@ const Codes = () => {
     if (!permission?.granted) requestPermission();
     else {
       router.push("./scan");
+    }
+  };
+  const receive = () => {
+    if (!permission?.granted) requestPermission();
+    else {
+      router.push("./receive");
+
     }
   };
 
@@ -129,7 +135,6 @@ const Codes = () => {
                 token={token}
                 refetch={refetch}
                 setRefetch={setRefetch}
-                setVisibleShare={setVisibleShare}
               />
             )}
             ListHeaderComponent={() => (
@@ -169,9 +174,7 @@ const Codes = () => {
             />
           </TouchableOpacity>
           <TouchableOpacity
-            onPress={() => {
-              router.push("./receive");
-            }}
+            onPress={receive}
             className="mr-4 bg-gray-100 h-14 rounded-full mb-10"
           >
             <Image
